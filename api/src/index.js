@@ -1,21 +1,16 @@
 const express = require('express')
 const cors = require('cors')
 const { GameDig } = require('gamedig')
-const db = require('./db')
-const fs = require('fs')
-const path = require('path')
+const { getDb, save } = require('./db')
 
 const app = express()
 app.use(cors())
 app.use(express.json())
 
-const API_SECRET = process.env.API_SECRET || ''
+const API_SECRET  = process.env.API_SECRET  || ''
 const SERVER_HOST = process.env.SERVER_HOST || '127.0.0.1'
 const SERVER_PORT = parseInt(process.env.SERVER_PORT || '27015')
-const PORT = parseInt(process.env.PORT || '3001')
-
-const dataDir = path.join(__dirname, '..', 'data')
-if (!fs.existsSync(dataDir)) fs.mkdirSync(dataDir, { recursive: true })
+const PORT        = parseInt(process.env.PORT || '3001')
 
 function authMiddleware(req, res, next) {
   if (!API_SECRET) return next()
@@ -29,30 +24,43 @@ function calcKdr(kills, deaths) {
   return Math.round((kills / deaths) * 100) / 100
 }
 
-function toPlayer(row) {
+function rowToPlayer(row) {
+  const [steam_id, name, score, kills, deaths, knife_kills, noscope_kills] = row
   return {
-    steamId: row.steam_id,
-    name: row.name,
-    score: row.score,
-    kills: row.kills,
-    deaths: row.deaths,
-    knifeKills: row.knife_kills,
-    noscopeKills: row.noscope_kills,
-    kdr: calcKdr(row.kills, row.deaths),
+    steamId: steam_id,
+    name,
+    score,
+    kills,
+    deaths,
+    knifeKills: knife_kills,
+    noscopeKills: noscope_kills,
+    kdr: calcKdr(kills, deaths),
   }
 }
 
-app.get('/ranking', (req, res) => {
-  const rows = db.prepare(
-    'SELECT * FROM players ORDER BY score DESC, kills DESC LIMIT 100'
-  ).all()
-  res.json(rows.map(toPlayer))
+app.get('/ranking', async (req, res) => {
+  try {
+    const db = await getDb()
+    const result = db.exec('SELECT steam_id, name, score, kills, deaths, knife_kills, noscope_kills FROM players ORDER BY score DESC, kills DESC LIMIT 100')
+    if (!result.length) return res.json([])
+    res.json(result[0].values.map(rowToPlayer))
+  } catch (e) {
+    res.status(500).json({ error: e.message })
+  }
 })
 
-app.get('/player/:steamId', (req, res) => {
-  const row = db.prepare('SELECT * FROM players WHERE steam_id = ?').get(req.params.steamId)
-  if (!row) return res.status(404).json({ error: 'Not found' })
-  res.json(toPlayer(row))
+app.get('/player/:steamId', async (req, res) => {
+  try {
+    const db = await getDb()
+    const result = db.exec(
+      'SELECT steam_id, name, score, kills, deaths, knife_kills, noscope_kills FROM players WHERE steam_id = ?',
+      [req.params.steamId]
+    )
+    if (!result.length || !result[0].values.length) return res.status(404).json({ error: 'Not found' })
+    res.json(rowToPlayer(result[0].values[0]))
+  } catch (e) {
+    res.status(500).json({ error: e.message })
+  }
 })
 
 app.get('/status', async (req, res) => {
@@ -72,42 +80,35 @@ app.get('/status', async (req, res) => {
       ping: Math.round(state.ping),
     })
   } catch {
-    res.json({
-      online: false,
-      name: 'RNK | Servidor Deathmatch',
-      map: '-',
-      players: 0,
-      maxPlayers: 32,
-      ping: 0,
-    })
+    res.json({ online: false, name: 'RNK | Servidor Deathmatch', map: '-', players: 0, maxPlayers: 32, ping: 0 })
   }
 })
 
-app.post('/sync', authMiddleware, (req, res) => {
+app.post('/sync', authMiddleware, async (req, res) => {
   const players = req.body
   if (!Array.isArray(players)) return res.status(400).json({ error: 'Expected array' })
 
-  const upsert = db.prepare(`
-    INSERT INTO players (steam_id, name, score, kills, deaths, knife_kills, noscope_kills, updated_at)
-    VALUES (@steamId, @name, @score, @kills, @deaths, @knifeKills, @noscopeKills, unixepoch())
-    ON CONFLICT(steam_id) DO UPDATE SET
-      name = excluded.name,
-      score = excluded.score,
-      kills = excluded.kills,
-      deaths = excluded.deaths,
-      knife_kills = excluded.knife_kills,
-      noscope_kills = excluded.noscope_kills,
-      updated_at = unixepoch()
-  `)
-
-  const upsertMany = db.transaction((list) => {
-    for (const p of list) upsert.run(p)
-  })
-
-  upsertMany(players)
-  res.json({ ok: true, count: players.length })
+  try {
+    const db = await getDb()
+    for (const p of players) {
+      db.run(`
+        INSERT INTO players (steam_id, name, score, kills, deaths, knife_kills, noscope_kills, updated_at)
+        VALUES (?, ?, ?, ?, ?, ?, ?, strftime('%s','now'))
+        ON CONFLICT(steam_id) DO UPDATE SET
+          name          = excluded.name,
+          score         = excluded.score,
+          kills         = excluded.kills,
+          deaths        = excluded.deaths,
+          knife_kills   = excluded.knife_kills,
+          noscope_kills = excluded.noscope_kills,
+          updated_at    = excluded.updated_at
+      `, [p.steamId, p.name, p.score, p.kills, p.deaths, p.knifeKills, p.noscopeKills])
+    }
+    save()
+    res.json({ ok: true, count: players.length })
+  } catch (e) {
+    res.status(500).json({ error: e.message })
+  }
 })
 
-app.listen(PORT, () => {
-  console.log(`RNK API running on port ${PORT}`)
-})
+app.listen(PORT, () => console.log(`RNK API running on port ${PORT}`))
