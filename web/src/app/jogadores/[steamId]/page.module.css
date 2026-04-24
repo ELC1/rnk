@@ -1,0 +1,93 @@
+.header {
+  padding: 48px 0 32px;
+}
+
+.back {
+  font-size: 13px;
+  color: var(--muted);
+  display: inline-block;
+  margin-bottom: 16px;
+}
+
+.back:hover { color: var(--accent); }
+
+.title {
+  font-size: 36px;
+  font-weight: 900;
+  letter-spacing: 2px;
+}
+
+.steamId {
+  font-size: 13px;
+  color: var(--muted);
+  margin-top: 6px;
+  font-family: monospace;
+}
+
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 16px;
+  margin-bottom: 32px;
+}
+
+.statCard {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 24px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.statVal {
+  font-size: 28px;
+  font-weight: 900;
+  color: var(--accent);
+}
+
+.statLbl {
+  font-size: 12px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.kdrBar {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 48px;
+}
+
+.kdrLabel {
+  font-size: 13px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.barWrap {
+  width: 100%;
+  height: 8px;
+  background: var(--bg3);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.barFill {
+  height: 100%;
+  background: var(--accent);
+  border-radius: 4px;
+  transition: width 0.3s;
+}
+
+.kdrGood { color: var(--green); font-weight: 700; font-size: 16px; }
+.kdrNeutral { color: var(--text); font-weight: 700; font-size: 16px; }
+.kdrBad { color: var(--red); font-weight: 700; font-size: 16px; }

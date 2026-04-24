@@ -1,0 +1,230 @@
+.wrap {
+  min-height: calc(100vh - 120px);
+}
+
+.hero {
+  background: linear-gradient(180deg, var(--bg2) 0%, var(--bg) 100%);
+  border-bottom: 1px solid var(--border);
+  padding: 80px 20px;
+  text-align: center;
+}
+
+.heroContent {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.heroTitle {
+  font-size: clamp(42px, 8vw, 72px);
+  font-weight: 900;
+  letter-spacing: 4px;
+  line-height: 1;
+  margin-bottom: 16px;
+}
+
+.accent {
+  color: var(--accent);
+}
+
+.heroSub {
+  font-size: 16px;
+  color: var(--muted);
+  margin-bottom: 40px;
+  letter-spacing: 1px;
+}
+
+.heroActions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.btnPrimary {
+  background: var(--accent);
+  color: #000;
+  font-weight: 700;
+  padding: 12px 28px;
+  border-radius: 8px;
+  font-size: 15px;
+  transition: opacity 0.15s;
+}
+
+.btnPrimary:hover { opacity: 0.85; }
+
+.btnSecondary {
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-weight: 600;
+  padding: 12px 28px;
+  border-radius: 8px;
+  font-size: 15px;
+  background: var(--bg3);
+  transition: border-color 0.15s;
+}
+
+.btnSecondary:hover { border-color: var(--accent); }
+
+.grid {
+  max-width: 1100px;
+  margin: 48px auto;
+  padding: 0 20px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+.card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.cardTitle {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: 0.5px;
+}
+
+.statusRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.dotOnline {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--green);
+  flex-shrink: 0;
+}
+
+.dotOffline {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--red);
+  flex-shrink: 0;
+}
+
+.statusName {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.statusDetails {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.statLine {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+}
+
+.statLabel {
+  color: var(--muted);
+}
+
+.offline {
+  font-size: 14px;
+  color: var(--muted);
+}
+
+.cardLink {
+  font-size: 13px;
+  color: var(--accent);
+  margin-top: auto;
+}
+
+.cardLink:hover { text-decoration: underline; }
+
+.topList {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.topItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 14px;
+}
+
+.rank {
+  font-weight: 700;
+  color: var(--accent);
+  width: 28px;
+  flex-shrink: 0;
+}
+
+.playerName {
+  flex: 1;
+  color: var(--text);
+  font-weight: 500;
+}
+
+.playerName:hover { color: var(--accent); }
+
+.playerScore {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.howList {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  font-size: 14px;
+  color: var(--text);
+  counter-reset: step;
+}
+
+.howList li {
+  counter-increment: step;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.howList li::before {
+  content: counter(step);
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.code {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 2px 6px;
+  font-family: monospace;
+  font-size: 13px;
+  color: var(--accent);
+}
+
+.howNote {
+  font-size: 13px;
+  color: var(--muted);
+  margin-top: auto;
+}

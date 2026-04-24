@@ -1,0 +1,16 @@
+# Node
+node_modules/
+.next/
+.env
+.env.local
+
+# API data
+api/data/
+
+# SourceMod compiled (binaries)
+runtime/
+*.smx
+
+# Temp
+tmp/
+*.log

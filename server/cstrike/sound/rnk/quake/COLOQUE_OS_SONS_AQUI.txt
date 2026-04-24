@@ -1,0 +1,17 @@
+Coloque os arquivos MP3 dos sons do Quake nesta pasta.
+Nomes esperados pelo plugin rnk_quakesounds:
+
+  headshot.mp3       - som de headshot
+  firstblood.mp3     - primeiro sangue da rodada
+  humiliation.mp3    - suicidio
+  doublekill.mp3     - 2 kills seguidas
+  triplekill.mp3     - 3 kills seguidas
+  multikill.mp3      - 4 kills seguidas
+  killingspree.mp3   - 5 kills seguidas
+  rampage.mp3        - 6 kills seguidas
+  dominating.mp3     - 7 kills seguidas
+  unstoppable.mp3    - 8 kills seguidas
+  godlike.mp3        - 9 kills seguidas
+  wickedsick.mp3     - 10+ kills seguidas
+
+Caminho completo no servidor: cstrike/sound/rnk/quake/
